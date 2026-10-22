@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Image Analysis & Tagging</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+<div id="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a href="/" class="logo">
+            <span class="logo-icon">AI</span>
+            <span>Image Analysis</span>
+        </a>
+
+        <nav class="nav-menu">
+
+            <a href="/" class="active">Home</a>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#about">About</a>
+            <!-- Custom Language Switcher -->
+<div class="custom-lang-switcher">
+    <select id="languageSelect" onchange="changeLanguage()">
+        <option value="en">English (US)</option>
+        <option value="ur">اردو (Urdu)</option>
+        <option value="fr">Français (French)</option>
+        <option value="es">Español (Spanish)</option>
+        <option value="zh-CN">中文 (Chinese)</option>
+        <option value="ar">العربية (Arabic)</option>
+    </select>
+</div>
+
+            <a href="/login" class="nav-login">
+                Login
+            </a>
+
+            <a href="/signup" class="nav-signup">
+                Get Started
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+<!-- ================= HERO ================= -->
+
+<main>
+
+<section class="hero-section">
+
+    <div class="hero-container">
+
+        <div class="hero-content">
+
+            <span class="hero-badge">
+                AI-Powered Image Analysis
+            </span>
+
+            <h1>
+                Understand Your Images
+                <span>with AI</span>
+            </h1>
+
+            <p>
+                Upload an image and let our intelligent image analysis
+                system identify objects, generate descriptive captions,
+                and provide confidence scores automatically.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="/login" class="btn btn-primary">
+                    Analyze an Image
+                </a>
+
+                <a href="/signup" class="btn btn-secondary">
+                    Create Free Account
+                </a>
+
+            </div>
+
+            <div class="hero-features">
+
+                <div>
+                    <strong>✓</strong>
+                    JPG & PNG Support
+                </div>
+
+                <div>
+                    <strong>✓</strong>
+                    AI-Based Analysis
+                </div>
+
+                <div>
+                    <strong>✓</strong>
+                    Confidence Scores
+                </div>
+
+            </div>
+
+        </div>
+
+
+                <!-- Hero visual -->
+        <div class="hero-visual">
+            <div class="analysis-card" style="text-align: center;">
+                <div class="card-header">
+                    <span>AI Analysis</span>
+                    <span class="status-dot">●</span>
+                </div>
+                
+                <!-- Mockup Image Area with Scanner -->
+                <div class="image-placeholder" style="background: linear-gradient(135deg, #e0e7ff, #ede9fe); position: relative; overflow: hidden; border: none; padding: 40px 20px;">
+                    <div style="font-size: 3.5rem; margin-bottom: 10px; position: relative; z-index: 2;">📸</div>
+                    <p style="font-weight: 700; color: var(--primary); position: relative; z-index: 2;">Analyzing Image...</p>
+                    
+                    <!-- AI Scanning Line Animation -->
+                    <div class="scan-line"></div>
+                </div>
+
+                <!-- Animated Results Area -->
+                <div class="sample-result">
+                    <div class="result-title">AI Detected</div>
+                    
+                    <div class="tag-row anim-tag-1">
+    <span>🧑 Human</span>
+    <strong>98%</strong>
+</div>
+<div class="tag-row anim-tag-2">
+    <span>👕 Clothing</span>
+    <strong>94%</strong>
+</div>
+<div class="tag-row anim-tag-3">
+    <span>🌳 Outdoor</span>
+    <strong>91%</strong>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</section>
+
+
+<!-- ================= FEATURES ================= -->
+
+<section id="features" class="features-section">
+
+    <div class="section-heading">
+
+        <span class="section-label">
+            FEATURES
+        </span>
+
+        <h2>
+            Powerful Image Analysis
+        </h2>
+
+        <p>
+            Everything you need to understand and organize
+            your images with AI.
+        </p>
+
+    </div>
+
+
+    <div class="features-grid">
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                ↑
+            </div>
+
+            <h3>Easy Image Upload</h3>
+
+            <p>
+                Upload JPG or PNG images quickly through
+                a simple and user-friendly interface.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                AI
+            </div>
+
+            <h3>AI Image Recognition</h3>
+
+            <p>
+                Analyze images using intelligent computer
+                vision technology.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                #
+            </div>
+
+            <h3>Descriptive Tags</h3>
+
+            <p>
+                Automatically identify meaningful tags
+                related to the uploaded image.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                %
+            </div>
+
+            <h3>Confidence Scores</h3>
+
+            <p>
+                View confidence levels for the generated
+                image tags.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                ✦
+            </div>
+
+            <h3>Image Captions</h3>
+
+            <p>
+                Generate descriptive captions that explain
+                the content of an image.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                ↻
+            </div>
+
+            <h3>Analysis History</h3>
+
+            <p>
+                Registered users can keep track of their
+                previous image analysis results.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= HOW IT WORKS ================= -->
+
+<section id="how-it-works" class="steps-section">
+
+    <div class="section-heading">
+
+        <span class="section-label">
+            HOW IT WORKS
+        </span>
+
+        <h2>
+            Analyze an Image in Three Steps
+        </h2>
+
+    </div>
+
+
+    <div class="steps-container">
+
+        <div class="step-card">
+
+            <div class="step-number">
+                01
+            </div>
+
+            <h3>Upload</h3>
+
+            <p>
+                Select a JPG or PNG image from your device
+                and upload it to the application.
+            </p>
+
+        </div>
+
+
+        <div class="step-card">
+
+            <div class="step-number">
+                02
+            </div>
+
+            <h3>Analyze</h3>
+
+            <p>
+                The image is processed using the integrated
+                AI image analysis service.
+            </p>
+
+        </div>
+
+
+        <div class="step-card">
+
+            <div class="step-number">
+                03
+            </div>
+
+            <h3>View Results</h3>
+
+            <p>
+                View generated tags, confidence scores,
+                and image caption.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= ABOUT ================= -->
+
+<section id="about" class="about-section">
+
+    <div class="about-container">
+
+        <div class="about-content">
+
+            <span class="section-label">
+                ABOUT THE PROJECT
+            </span>
+
+            <h2>
+                Intelligent Image Understanding
+            </h2>
+
+            <p>
+                Image Analysis & Tagging is a web-based application
+                designed to simplify image understanding through
+                automated AI analysis.
+            </p>
+
+            <p>
+                The system analyzes uploaded images and provides
+                descriptive tags, confidence levels, and captions
+                through an easy-to-use web interface.
+            </p>
+
+        </div>
+
+        <div class="about-stats">
+
+            <div class="stat-box">
+                <strong>AI</strong>
+                <span>Powered</span>
+            </div>
+
+            <div class="stat-box">
+                <strong>JPG</strong>
+                <span>Supported</span>
+            </div>
+
+            <div class="stat-box">
+                <strong>PNG</strong>
+                <span>Supported</span>
+            </div>
+
+            <div class="stat-box">
+                <strong>24/7</strong>
+                <span>Available</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div>
+            <h3>Image Analysis & Tagging</h3>
+
+            <p>
+                AI-powered image analysis web application.
+            </p>
+        </div>
+
+        <div class="footer-links">
+
+            <a href="/">Home</a>
+            <a href="#features">Features</a>
+            <a href="/login">Login</a>
+            <a href="/signup">Signup</a>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 Image Analysis & Tagging Web Application.
+            All rights reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script src="/static/js/script.js"></script>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

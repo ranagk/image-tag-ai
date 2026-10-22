@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Email - ImageTag AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-page">
+    <!-- Flash Messages Container -->
+<div id="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<div class="auth-wrapper">
+    <section class="auth-info">
+        <a href="/" class="auth-logo"><span>IA</span> Image Analysis</a>
+        <div class="auth-info-content">
+            <span class="hero-badge">ALMOST THERE!</span>
+            <h1>Change your email address.</h1>
+            <p>We will send a new verification link to your new email address. Your username and password will remain the same.</p>
+        </div>
+    </section>
+
+    <main class="auth-form-area">
+        <div class="auth-form-card">
+            <h2>Change Email Address</h2>
+            <p class="auth-subtitle">Enter the new email address you want to use.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('update_email') }}">
+                <!-- Purana email chhupa kar bhej rahe hain taake pata chale kis user ka email change karna hai -->
+                <input type="hidden" name="old_email" value="{{ old_email }}">
+
+                <div class="form-group">
+                    <label for="new_email">New Email Address</label>
+                    <input 
+                        type="email" 
+                        id="new_email" 
+                        name="new_email" 
+                        placeholder="Enter your new email" 
+                        required>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary">Update Email</button>
+                    <a href="{{ url_for('signup') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

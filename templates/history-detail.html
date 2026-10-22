@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previous Analysis | ImageTag AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+{% include 'navbar.html' %}
+
+<div id="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<main class="details-container">
+    
+    <div class="details-topbar">
+            <!-- Top Bar: Back Link & Download Button -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <a href="{{ url_for('history') }}" class="back-link" style="margin-bottom: 0;">← Back to Analysis History</a>
+        <a href="{{ url_for('download_report', analysis_id=result.id) }}" class="btn btn-success">
+            📄 Download Report (PDF)
+        </a>
+    </div>
+    </div>
+
+    <div class="details-grid">
+        
+        <div class="card">
+            <h2>Analyzed Image</h2>
+            <img src="{{ url_for('static', filename='uploads/' + result.image_name) }}" alt="Analyzed Image" class="analysis-image">
+        </div>
+
+        <div class="card">
+            <h2>Analysis Details</h2>
+
+            <div class="info-row">
+                <span class="info-label">File:</span>
+                <span class="info-value">{{ result.image_name }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Date:</span>
+                <span class="info-value">{{ result.date }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Service:</span>
+                <span class="info-value" style="color: var(--success); font-weight: 600;">API</span>
+            </div>
+
+            <hr>
+
+            <h3>Image Caption</h3>
+            <div class="caption-box">
+                {{ result.caption or 'No caption available.' }}
+            </div>
+
+            <h3>Detected Tags</h3>
+            <div class="tag-list">
+                {% if result.tags %}
+                    {% for tag in result.tags %}
+                        <div class="tag-item">
+                            <span class="tag-name">{{ tag.name }}</span>
+                            <span class="confidence">{{ "%.1f"|format(tag.confidence * 100) }}%</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No tags available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>

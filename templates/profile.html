@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | ImageTag AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-page">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <a href="/dashboard" class="sidebar-logo">
+        <span class="logo-icon">IA</span>
+        <span>Image Analysis</span>
+    </a>
+    <div id="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+    <nav class="sidebar-menu">
+        <a href="/dashboard" class="sidebar-link"><span>⌂</span> Dashboard</a>
+        <a href="/upload" class="sidebar-link"><span>↑</span> Analyze Image</a>
+        <a href="/history" class="sidebar-link"><span>◷</span> Analysis History</a>
+        <a href="/profile" class="sidebar-link active"><span>◎</span> My Profile</a>
+        <a href="/settings" class="sidebar-link"><span>⚙</span> Settings</a>
+    </nav>
+    <div class="sidebar-bottom">
+        <a href="/logout" class="sidebar-link logout-link"><span>↪</span> Logout</a>
+    </div>
+</aside>
+
+<main class="dashboard-main">
+    <header class="dashboard-header">
+        <div>
+            <h1>My Profile</h1>
+            <p>Manage your account information.</p>
+        </div>
+        <div class="user-menu">
+            <div class="user-avatar">{{ session.get('username', 'U')[0]|upper }}</div>
+            <div class="user-info">
+                <strong>{{ session.get('username', 'User') }}</strong>
+                <small>Registered User</small>
+            </div>
+        </div>
+    </header>
+
+    <section class="profile-card" style="max-width: 600px; margin: 0 auto;">
+        <div class="profile-header">
+            <div class="avatar">{{ user.username[0]|upper }}</div>
+            <h1>{{ user.username }}</h1>
+            <p>Registered User</p>
+        </div>
+
+        <div class="profile-info">
+            <div class="info-row">
+                <span class="label">Username</span>
+                <span class="value">{{ user.username }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Email Address</span>
+                <span class="value">{{ user.email }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Account Status</span>
+                <span class="value" style="color: var(--success);">Active</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Total Analyses</span>
+                <span class="value">{{ total_analyses|default(0) }}</span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">Edit Profile</a>
+            <a href="{{ url_for('change_password') }}" class="btn btn-secondary">Change Password</a>
+        </div>
+    </section>
+</main>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

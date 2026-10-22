@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis History | ImageTag AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-page">
+
+<!-- Sidebar (Same as Dashboard) -->
+<aside class="sidebar">
+    <a href="/dashboard" class="sidebar-logo">
+        <span class="logo-icon">IA</span>
+        <span>Image Analysis</span>
+    </a>
+    <div id="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+    <nav class="sidebar-menu">
+        <a href="/dashboard" class="sidebar-link"><span>⌂</span> Dashboard</a>
+        <a href="/upload" class="sidebar-link"><span>↑</span> Analyze Image</a>
+        <a href="/history" class="sidebar-link active"><span>◷</span> Analysis History</a>
+        <a href="/profile" class="sidebar-link"><span>◎</span> My Profile</a>
+        <a href="/settings" class="sidebar-link"><span>⚙</span> Settings</a>
+    </nav>
+    <div class="sidebar-bottom">
+        <a href="/logout" class="sidebar-link logout-link"><span>↪</span> Logout</a>
+    </div>
+</aside>
+
+<main class="dashboard-main">
+    <header class="dashboard-header">
+        <div>
+            <h1>Analysis History</h1>
+            <p>View and manage your previous image analysis results.</p>
+        </div>
+        <div class="user-menu">
+            <div class="user-avatar">{{ session.get('username', 'U')[0]|upper }}</div>
+            <div class="user-info">
+                <strong>{{ session.get('username', 'User') }}</strong>
+                <small>Registered User</small>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter -->
+    <section class="filter-card">
+        <form method="GET" action="{{ url_for('history') }}" class="filter-form">
+            <input type="search" name="search" class="form-control" placeholder="Search by image name..." value="{{ request.args.get('search', '') }}">
+            <select name="filter" class="form-control">
+                <option value="">All Results</option>
+                <option value="recent" {% if request.args.get('filter') == 'recent' %}selected{% endif %}>Recent</option>
+                <option value="saved" {% if request.args.get('filter') == 'saved' %}selected{% endif %}>Saved</option>
+            </select>
+            <button type="submit" class="btn btn-primary btn-search">Search</button>
+        </form>
+    </section>
+
+    <!-- History Grid -->
+    {% if history %}
+    <div class="history-grid">
+        {% for item in history %}
+        <div class="history-card">
+            <img src="{{ url_for('static', filename='uploads/' + item.image_name) }}" alt="Image" class="history-image">
+            <div class="history-body">
+                <h2>{{ item.image_name }}</h2>
+                <div class="history-date">{{ item.date }}</div>
+                <p class="history-caption">{{ item.caption or 'No caption available.' }}</p>
+                <div class="history-actions">
+                    <a href="{{ url_for('history_details', result_id=item.id) }}" class="view-btn">View Analysis</a>
+                    <form action="{{ url_for('delete_history', result_id=item.id) }}" method="POST" class="delete-history-form" data-confirm="Are you sure?">
+                        <button type="submit" class="delete-btn">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h2>No Analysis History</h2>
+        <p>You have not saved any image analysis results yet.</p>
+        <a href="{{ url_for('upload') }}" class="btn btn-primary">Analyze Your First Image</a>
+    </div>
+    {% endif %}
+</main>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

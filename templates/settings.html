@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | ImageTag AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-page">
+
+<!-- Flash Messages -->
+<div id="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <a href="/dashboard" class="sidebar-logo">
+        <span class="logo-icon">IA</span>
+        <span>Image Analysis</span>
+    </a>
+    <nav class="sidebar-menu">
+        <a href="/dashboard" class="sidebar-link"><span>⌂</span> Dashboard</a>
+        <a href="/upload" class="sidebar-link"><span>↑</span> Analyze Image</a>
+        <a href="/history" class="sidebar-link"><span>◷</span> Analysis History</a>
+        <a href="/profile" class="sidebar-link"><span>◎</span> My Profile</a>
+        <a href="/settings" class="sidebar-link active"><span>⚙</span> Settings</a>
+    </nav>
+    <div class="sidebar-bottom">
+        <a href="/logout" class="sidebar-link logout-link"><span>↪</span> Logout</a>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="dashboard-main">
+    <header class="dashboard-header">
+        <div>
+            <h1>Settings</h1>
+            <p>Manage your account preferences.</p>
+        </div>
+        <div class="user-menu">
+            <div class="user-avatar">{{ session.get('username', 'U')[0]|upper }}</div>
+            <div class="user-info">
+                <strong>{{ session.get('username', 'User') }}</strong>
+                <small>Registered User</small>
+            </div>
+        </div>
+    </header>
+
+    <!-- Preferences Card -->
+    <section class="card" style="max-width: 700px; padding: 30px; margin-bottom: 30px;">
+        <h2 style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">Preferences</h2>
+        
+        <form method="POST" action="{{ url_for('settings') }}">
+            
+            <!-- Email Notifications -->
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                <input 
+                    type="checkbox" 
+                    id="email_notifications" 
+                    name="email_notifications" 
+                    style="width: 18px; height: 18px; accent-color: var(--primary);"
+                    {% if user.email_notifications %}checked{% endif %}>
+                <label for="email_notifications" style="margin-bottom: 0; cursor: pointer; font-size: 1rem;">
+                    Receive email notifications
+                </label>
+            </div>
+            <small class="input-help" style="margin-top: -10px; margin-bottom: 25px; display: block; padding-left: 28px;">
+                Get notified about new features, updates, and security alerts.
+            </small>
+
+            <div class="actions" style="margin-top: 20px;">
+                <button type="submit" class="btn btn-primary">Save Preferences</button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Danger Zone Card -->
+    <section class="card" style="max-width: 700px; padding: 30px; border: 1px solid var(--danger); background: rgba(220, 38, 38, 0.05);">
+        <h2 style="color: var(--danger); margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--danger-light);">Danger Zone</h2>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 20px;">
+            Once you delete your account, all your images, analysis history, and personal data will be permanently removed. This action <strong>cannot be undone</strong>.
+        </p>
+        
+        <!-- Delete Account Form -->
+        <form method="POST" action="{{ url_for('delete_account') }}" onsubmit="return confirm('Are you absolutely sure you want to delete your account? This action cannot be undone and all your data will be lost.');">
+            <button type="submit" class="btn btn-danger">Delete My Account Permanently</button>
+        </form>
+    </section>
+
+</main>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

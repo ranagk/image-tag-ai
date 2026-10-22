@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Image Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-page">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div id="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <div class="sidebar-logo">
+        <span class="logo-icon">AI</span>
+        <span>Image Analysis</span>
+    </div>
+
+    <nav class="sidebar-menu">
+        <a href="/dashboard" class="sidebar-link active"><span>⌂</span> Dashboard</a>
+        <a href="/upload" class="sidebar-link"><span>↑</span> Analyze Image</a>
+        <a href="/history" class="sidebar-link"><span>◷</span> Analysis History</a>
+        <a href="/profile" class="sidebar-link"><span>◎</span> My Profile</a>
+        <a href="/settings" class="sidebar-link"><span>⚙</span> Settings</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <a href="/logout" class="sidebar-link logout-link"><span>↪</span> Logout</a>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="dashboard-main">
+    <!-- TOP HEADER -->
+    <header class="dashboard-header">
+        <div>
+            <h1>Dashboard</h1>
+            <p>Analyze and understand your images with AI.</p>
+        </div>
+        <div class="user-menu">
+            <div class="user-avatar">{{ session.get('username', 'U')[0]|upper }}</div>
+            <div class="user-info">
+                <strong>{{ session.get('username', 'User') }}</strong>
+                <small>Registered User</small>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= WELCOME CARD ================= -->
+    <section class="welcome-card" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 40px 50px; position: relative; overflow: hidden;">
+        
+        <!-- LEFT SIDE: Text -->
+        <div style="flex: 1; text-align: left; z-index: 2; position: relative;">
+            <span class="welcome-label" style="background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 16px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #ffffff;">
+                ✨ AI IMAGE ANALYSIS
+            </span>
+            <h2 style="font-size: 2.2rem; font-weight: 800; color: #ffffff; margin-top: 15px; margin-bottom: 15px; line-height: 1.2;">
+                Welcome back, {{ session.get('username', 'User') }}! 👋
+            </h2>
+            <p style="font-size: 1.05rem; color: #c7d2fe; max-width: 500px; margin-bottom: 0;">
+                Upload an image and let our advanced AI analyze its content, generate tags, and create descriptive captions instantly.
+            </p>
+        </div>
+
+        <!-- RIGHT SIDE: 3D AI Orb Animation -->
+        <div style="flex-shrink: 0; z-index: 2; position: relative; margin-left: 20px;">
+            <style>
+                @keyframes floatAnim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+                @keyframes spinAnim { 100% { transform: rotate(360deg); } }
+                .orb-inner-3d { width: 120px; height: 120px; background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05)); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 800; color: #ffffff; z-index: 2; box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.3), 0 0 30px rgba(14, 165, 233, 0.5); animation: floatAnim 4s ease-in-out infinite; }
+                .orb-ring-3d { position: absolute; width: 140%; height: 140%; border: 2px dashed rgba(255, 255, 255, 0.4); border-radius: 50%; animation: spinAnim 15s linear infinite; }
+            </style>
+            <div style="width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <div class="orb-inner-3d">AI</div>
+                <div class="orb-ring-3d"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= STATISTICS ================= -->
+    <section class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-icon">↑</div>
+            <div><span>Total Analyses</span><strong>{{ total_analyses|default(0) }}</strong></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">#</div>
+            <div><span>Images Analyzed</span><strong>{{ total_images|default(0) }}</strong></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">AI</div>
+            <div><span>AI Results</span><strong>{{ total_results|default(0) }}</strong></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✓</div>
+            <div><span>System Status</span><strong class="status-online">Active</strong></div>
+        </div>
+    </section>
+
+    <!-- ================= QUICK ANALYSIS ================= -->
+    <!-- Maine yahan inline style se grid ka size fix kiya hai (Left 1 barabar, Right 1.2 guna) -->
+    <section style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; align-items: stretch; margin-bottom: 28px;">
+        
+        <!-- UPLOAD CARD (New Analysis) -->
+        <!-- Is box ki height 100% aur min-height set ki hai taake text na toote -->
+        <div class="dashboard-card" style="display: flex; flex-direction: column; height: 100%; min-height: 400px;">
+            <div class="card-heading">
+                <div>
+                    <span class="card-label">NEW ANALYSIS</span>
+                    <h3 style="font-size: 1.2rem; white-space: nowrap;">Upload an Image</h3>
+                </div>
+                <span class="card-icon">↑</span>
+            </div>
+
+            <form action="/analyze" method="POST" enctype="multipart/form-data" id="dashboardUploadForm" style="display: flex; flex-direction: column; flex: 1;">
+                <!-- Dropzone jo poori jagah lega -->
+                <div class="upload-dropzone" id="uploadDropzone" style="flex: 1; display: flex; flex-direction: column; justify-content: center; margin-bottom: 20px;">
+                    <input type="file" id="imageInput" name="image" accept=".jpg,.jpeg,.png" hidden required>
+                    
+                    <label for="imageInput" class="upload-label" id="uploadLabel" style="height: 100%; padding: 20px;">
+                        <div class="upload-icon">↑</div>
+                        <h4 style="font-size: 1.1rem; margin-bottom: 5px;">Choose an image</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 5px;">Click to browse or drag and drop</p>
+                        <small style="font-size: 0.8rem;">JPG, JPEG or PNG</small>
+                    </label>
+                    
+                    <div id="imagePreview" class="image-preview" style="display:none; width: 100%; height: 100%;">
+                        <img id="previewImage" src="" alt="Image Preview" style="width: 100%; height: 100%; object-fit: contain;">
+                        <button type="button" id="removeImage" class="remove-image">×</button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full" style="padding: 14px; font-size: 1rem;">Analyze Image</button>
+            </form>
+        </div>
+
+        
+                <!-- RECENT ANALYSIS CARD -->
+        <div class="dashboard-card" style="display: flex; flex-direction: column; align-self: start; height: fit-content; max-height: 100%;">
+            <div class="card-heading">
+                <div>
+                    <span class="card-label">RECENT</span>
+                    <h3>Recent Analysis</h3>
+                </div>
+                <a href="/history">View All</a>
+            </div>
+
+            <div class="recent-list" style="flex: 1; overflow-y: auto; max-height: 330px; display: flex; flex-direction: column; gap: 12px; padding-right: 5px;">
+                {% if recent_analysis %}
+                    {% for item in recent_analysis %}
+                        <div class="recent-item" style="display: flex; align-items: center; gap: 14px; padding: 12px; background-color: var(--bg-body); border: 1px solid var(--border); border-radius: var(--radius); min-height: 75px; height: 75px; flex-shrink: 0;">
+                            <img src="{{ url_for('static', filename='uploads/' + item.image_name) }}" alt="Analyzed image" style="width: 56px; height: 56px; object-fit: cover; border-radius: var(--radius-sm); flex-shrink: 0;">
+                            <div class="recent-info" style="flex: 1; min-width: 0; overflow: hidden;">
+                                <strong style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
+                                    {{ item.caption or 'Image Analysis' }}
+                                </strong>
+                                <small style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
+                                    {{ item.date }}
+                                </small>
+                            </div>
+                            <a href="{{ url_for('result', analysis_id=item.id) }}" class="view-btn" style="padding: 7px 14px; background-color: var(--primary); color: #ffffff; font-size: 0.85rem; font-weight: 600; border-radius: var(--radius-sm); flex-shrink: 0; text-decoration: none;">
+                                View
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 44px 24px; text-align: center; background-color: var(--bg-body); border: 2px dashed var(--border); border-radius: var(--radius-lg); height: 100%;">
+                        <div class="empty-icon" style="font-size: 2.2rem; opacity: 0.6;">🖼</div>
+                        <h4 style="font-size: 1.1rem;">No analysis yet</h4>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); max-width: 340px;">Upload your first image to see the results here.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= INFO SECTION ================= -->
+    <section class="info-section">
+        <div class="info-content">
+            <span class="card-label">HOW IT WORKS</span>
+            <h2>Analyze your images in seconds</h2>
+            <p>Our image analysis workflow processes your uploaded image and returns meaningful information including tags, confidence scores and descriptive captions.</p>
+        </div>
+        <div class="info-steps">
+            <div class="mini-step"><span>01</span><strong>Upload</strong></div>
+            <div class="mini-step"><span>02</span><strong>AI Analysis</strong></div>
+            <div class="mini-step"><span>03</span><strong>Results</strong></div>
+        </div>
+    </section>
+</main>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

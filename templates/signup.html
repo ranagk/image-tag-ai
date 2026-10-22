@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account - Image Analysis</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+<body class="auth-page">
+    <div id="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+
+<div class="auth-wrapper">
+
+
+    <!-- LEFT SIDE -->
+
+    <div class="auth-info">
+
+        <a href="/" class="auth-logo">
+            <span>IA</span>
+            Image Analysis
+        </a>
+
+        <div class="auth-info-content">
+
+            <span class="hero-badge">
+                GET STARTED
+            </span>
+
+            <h1>
+                Start analyzing
+                your images today.
+            </h1>
+
+            <p>
+                Create your account and access intelligent
+                image analysis with tags, captions and
+                confidence scores.
+            </p>
+
+
+            <div class="auth-benefit">
+
+                <span>✓</span>
+
+                <div>
+                    <strong>Simple Upload</strong>
+
+                    <small>
+                        Upload JPG and PNG images
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="auth-benefit">
+
+                <span>✓</span>
+
+                <div>
+
+                    <strong>AI-Powered Results</strong>
+
+                    <small>
+                        Get meaningful image insights
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="auth-benefit">
+
+                <span>✓</span>
+
+                <div>
+
+                    <strong>Save Your History</strong>
+
+                    <small>
+                        Access previous analysis results
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT SIDE -->
+
+    <div class="auth-form-area">
+
+        <div class="auth-form-card">
+
+            <div class="mobile-auth-logo">
+                Image Analysis
+            </div>
+
+            <h2>
+                Create Account
+            </h2>
+
+            <p class="auth-subtitle">
+                Create your account to get started.
+            </p>
+
+
+            {% with messages = get_flashed_messages() %}
+
+                {% if messages %}
+
+                    {% for message in messages %}
+
+                        <div class="alert alert-error">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            {% endwith %}
+
+
+            <form method="POST" action="/signup">
+
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your username"
+                        minlength="3"
+                        maxlength="50"
+                        autocomplete="username"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a password"
+                        minlength="6"
+                        autocomplete="new-password"
+                        required>
+
+                    <small class="input-help">
+                        Use at least 6 characters.
+                    </small>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="confirm_password">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Confirm your password"
+                        minlength="6"
+                        autocomplete="new-password"
+                        required>
+
+                </div>
+
+
+                <div class="terms-row">
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            name="terms"
+                            required>
+
+                        I agree to the
+                        <a href="#">
+                            Terms & Conditions
+                        </a>
+
+                    </label>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-full">
+
+                    Create Account
+
+                </button>
+
+
+            </form>
+
+
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+
+
+            <p class="auth-switch">
+
+                Already have an account?
+
+                <a href="/">
+                    Login
+                </a>
+
+            </p>
+
+
+            <a href="/" class="back-home">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="/static/js/script.js"></script>
+
+</body>
+</html>

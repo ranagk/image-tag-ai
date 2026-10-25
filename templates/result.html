@@ -6,39 +6,12 @@
     <title>Analysis Results | ImageTag AI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="dashboard-page">
+<body class="has-bottom-nav">
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-    <a href="/dashboard" class="sidebar-logo">
-        <span class="logo-icon">IA</span>
-        <span>Image Analysis</span>
-    </a>
-    <div id="flash-messages">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-</div>
-    <nav class="sidebar-menu">
-        <a href="/dashboard" class="sidebar-link"><span>⌂</span> Dashboard</a>
-        <a href="/upload" class="sidebar-link"><span>↑</span> Analyze Image</a>
-        <a href="/history" class="sidebar-link"><span>◷</span> Analysis History</a>
-        <a href="/profile" class="sidebar-link"><span>◎</span> My Profile</a>
-        <a href="/settings" class="sidebar-link"><span>⚙</span> Settings</a>
-    </nav>
-    <div class="sidebar-bottom">
-        <a href="/logout" class="sidebar-link logout-link"><span>↪</span> Logout</a>
-    </div>
-</aside>
+{% include 'navbar.html' %}
 
-<!-- MAIN CONTENT -->
-<main class="dashboard-main">
+<main class="page-container">
+
     <header class="dashboard-header">
         <div>
             <h1>Analysis Results</h1>
@@ -55,14 +28,14 @@
     </header>
 
     <div class="result-grid" style="grid-template-columns: 1fr 1.2fr;">
-        
+
         <!-- LEFT: Image & Info -->
         <section class="result-card" style="display: flex; flex-direction: column;">
             <h2>Analyzed Image</h2>
             <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: var(--bg-body); border-radius: var(--radius); padding: 10px;">
                 <img src="{{ url_for('static', filename='uploads/' + result.image_name) }}" alt="Analyzed image" style="max-height: 400px; object-fit: contain; border-radius: var(--radius);">
             </div>
-            
+
             <div style="margin-top: 20px;">
                 <div class="info-row">
                     <span class="info-label">File Name</span>
@@ -81,13 +54,11 @@
 
         <!-- RIGHT: Caption & Tags -->
         <section class="result-card">
-            <!-- Caption -->
             <h2>AI Generated Caption</h2>
             <div class="caption-box" style="font-size: 1.05rem; font-style: italic; margin-bottom: 30px;">
                 "{{ result.caption or 'No caption was generated for this image.' }}"
             </div>
 
-            <!-- Tags -->
             <h2>Detected Tags ({{ result.tags|length }})</h2>
             <div class="tag-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 {% if result.tags %}

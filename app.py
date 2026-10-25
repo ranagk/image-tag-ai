@@ -164,17 +164,23 @@ def analyze_image_with_gemini(image_path):
 # =========================================================
 # DATABASE CONFIG
 # =========================================================
+# =========================================================
+# DATABASE CONFIG
+# =========================================================
 DB_CONFIG = {
-    "host": os.getenv("MYSQL_HOST"),
-    "port": int(os.getenv("MYSQL_PORT", 10200)),
-    "user": os.getenv("MYSQL_USER"),
-    "password": os.getenv("MYSQL_PASSWORD"),
-    "database": os.getenv("MYSQL_DATABASE"),
+    "host": os.getenv("MYSQL_HOST", "localhost"),
+    "port": int(os.getenv("MYSQL_PORT", 3306)),
+    "user": os.getenv("MYSQL_USER", "root"),
+    "password": os.getenv("MYSQL_PASSWORD", ""),
+    "database": os.getenv("MYSQL_DATABASE", "image_tag_db"),
     "charset": "utf8mb4",
     "use_unicode": True,
-    "ssl_ca": "ca.pem",  # <-- Ye line add karein
-    "ssl_verify_cert": True  # <-- Aur ye line add karein
 }
+
+# Agar Aiven (cloud) ka host hai to SSL lagao, localhost ke liye nahi
+if DB_CONFIG["host"] != "localhost":
+    DB_CONFIG["ssl_ca"] = "ca.pem"
+    DB_CONFIG["ssl_verify_cert"] = True
 
 def get_db():
     if "db" not in g:

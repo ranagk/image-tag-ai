@@ -6,30 +6,19 @@
     <title>Previous Analysis | ImageTag AI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
+<body class="has-bottom-nav">
 
 {% include 'navbar.html' %}
-
-<div id="flash-messages">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-</div>
 
 <main class="details-container">
     
     <div class="details-topbar">
-            <!-- Top Bar: Back Link & Download Button -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-        <a href="{{ url_for('history') }}" class="back-link" style="margin-bottom: 0;">← Back to Analysis History</a>
-        <a href="{{ url_for('download_report', analysis_id=result.id) }}" class="btn btn-success">
-            📄 Download Report (PDF)
-        </a>
-    </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <a href="{{ url_for('history') }}" class="back-link" style="margin-bottom: 0;">← Back to Analysis History</a>
+            <a href="{{ url_for('download_report', analysis_id=result.id) }}" class="btn btn-success">
+                📄 Download Report (PDF)
+            </a>
+        </div>
     </div>
 
     <div class="details-grid">
@@ -81,5 +70,6 @@
 
 </main>
 
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

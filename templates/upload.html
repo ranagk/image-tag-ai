@@ -6,49 +6,19 @@
     <title>Analyze Image - Image Analysis</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body class="dashboard-page">
-    
+<body class="has-bottom-nav">
 
-<!-- ================= SIDEBAR ================= -->
-<aside class="sidebar">
-    <div class="sidebar-logo">
-        <span class="logo-icon">IA</span>
-        <span>Image Analysis</span>
-    </div>
-    <div id="flash-messages">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-</div>
-    <nav class="sidebar-menu">
-        <a href="/dashboard" class="sidebar-link"><span>⌂</span> Dashboard</a>
-        <a href="/upload" class="sidebar-link active"><span>↑</span> Analyze Image</a>
-        <a href="/history" class="sidebar-link"><span>◷</span> Analysis History</a>
-        <a href="/profile" class="sidebar-link"><span>◎</span> My Profile</a>
-        <a href="/settings" class="sidebar-link"><span>⚙</span> Settings</a>
-    </nav>
-    <div class="sidebar-bottom">
-        <a href="/logout" class="sidebar-link logout-link"><span>↪</span> Logout</a>
-    </div>
-</aside>
+{% include 'navbar.html' %}
 
-<!-- ================= MAIN ================= -->
-<main class="dashboard-main">
+<main class="page-container">
+
     <header class="dashboard-header">
         <div>
             <h1>Analyze Image</h1>
             <p>Upload an image for AI-powered analysis.</p>
         </div>
-        <a href="/dashboard" class="btn btn-secondary">← Dashboard</a>
     </header>
 
-    <!-- ================= ANALYSIS AREA ================= -->
     <section class="analysis-page">
         <div class="analysis-upload-card dashboard-card">
             <div class="card-heading">
@@ -60,11 +30,9 @@
             </div>
 
             <form action="/analyze" method="POST" enctype="multipart/form-data" id="analysisForm">
-                <!-- DROPZONE BOX -->
                 <div class="large-dropzone" id="largeDropzone">
                     <input type="file" name="image" id="analysisImageInput" accept=".jpg,.jpeg,.png" hidden required>
 
-                    <!-- Upload Prompt (Jab image select nahi hoti) -->
                     <div id="uploadPrompt" class="upload-prompt">
                         <div class="large-upload-icon">↑</div>
                         <h3>Drag & Drop Your Image</h3>
@@ -73,10 +41,8 @@
                         <span class="file-support">Supported formats: JPG, JPEG, PNG</span>
                     </div>
 
-                    <!-- Preview (Jab image select ho jati hai) -->
                     <div id="analysisPreview" class="analysis-preview" style="display:none; width: 100%; text-align: center;">
-    <!-- Yahan inline style add ki hai image ko bada karne ke liye -->
-    <img id="analysisPreviewImage" src="" alt="Selected Image" style="width: 100%; max-width: 600px; height: 350px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <img id="analysisPreviewImage" src="" alt="Selected Image" style="width: 100%; max-width: 600px; height: 350px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                         <div class="preview-info">
                             <strong id="selectedFileName">Image Name</strong>
                             <span id="selectedFileSize">0 KB</span>
@@ -85,7 +51,6 @@
                     </div>
                 </div>
 
-                <!-- ANALYSIS OPTIONS -->
                 <div class="analysis-options">
                     <h3>Analysis Information</h3>
                     <div class="option-grid">

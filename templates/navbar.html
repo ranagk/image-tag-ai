@@ -7,19 +7,25 @@
 
         <nav class="nav-menu">
             {% if session.get('username') %}
-                <!-- Agar user login hai -->
-                <a href="/dashboard" class="active">Dashboard</a>
-                <a href="/upload">Analyze Image</a>
-                <a href="/history">Analysis History</a>
-                <a href="/profile">My Profile</a>
-                <a href="/settings">Settings</a>
-                
-                <div class="nav-user">
-                    👤 {{ session.get('username') }}
+                <a href="/dashboard" data-icon="🏠" class="{% if request.path == '/dashboard' %}active{% endif %}">Dashboard</a>
+                <a href="/upload" data-icon="⬆" class="{% if request.path == '/upload' %}active{% endif %}">Upload</a>
+                <a href="/history" data-icon="🕐" class="{% if request.path.startswith('/history') or request.path.startswith('/result') %}active{% endif %}">History</a>
+
+                <!-- NORMAL DROPDOWN STRUCTURE -->
+                <div class="nav-profile-dropdown">
+                    <div class="profile-trigger" role="button" tabindex="0">
+                        <span class="mini-avatar">{{ session.get('username', 'U')[0]|upper }}</span>
+                        <span class="profile-name">{{ session.get('username') }}</span>
+                        <span class="caret">▼</span>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="/profile">👤 My Profile</a>
+                        <a href="/settings">⚙ Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/logout" class="danger-link">↪ Logout</a>
+                    </div>
                 </div>
-                <a href="/logout" class="nav-signup" style="background-color: var(--danger);">Logout</a>
             {% else %}
-                <!-- Agar user login nahi hai -->
                 <a href="/">Home</a>
                 <a href="#features">Features</a>
                 <a href="/login" class="nav-login">Login</a>
@@ -30,46 +36,6 @@
 </header>
 
 <!-- Global Flash Alerts -->
-<div style="position: fixed; top: 80px; right: 20px; z-index: 9999; width: 320px;">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}" style="box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-radius: 8px; font-size: 0.95rem; padding: 12px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; animation: slideInRight 0.3s ease;">
-                    {% if category == 'success' %} ✅ {% elif category == 'error' %} ❌ {% else %} ⚠️ {% endif %}
-                    <span>{{ message }}</span>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-</div>
-
-<style>
-    @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-</style><!-- Global Flash Alerts -->
-<div style="position: fixed; top: 80px; right: 20px; z-index: 9999; width: 320px;">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}" style="box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-radius: 8px; font-size: 0.95rem; padding: 12px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; animation: slideInRight 0.3s ease;">
-                    {% if category == 'success' %} ✅ {% elif category == 'error' %} ❌ {% else %} ⚠️ {% endif %}
-                    <span>{{ message }}</span>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-</div>
-
-<style>
-    @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-</style>
-
-<!-- Global Flash Messages -->
 <div id="global-alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; width: 320px;">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}

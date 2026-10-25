@@ -17,6 +17,8 @@
    13. Search Input Auto-Focus
    14. Auto-dismiss Flash Messages
    15. Console Safety Check
+   16. Profile Dropdown Toggle
+   17. Language Switcher Logic
    ========================================================================== */
 
 
@@ -44,11 +46,9 @@ document.addEventListener("DOMContentLoaded", function () {
 /* Har alert message 5 second baad khud gayab ho jaye */
 
 function initAlertAutoHide() {
-    // Dekho ke koi alert mojood hai jo Flask/Jinja ne banaya hai
     const alerts = document.querySelectorAll(".alert");
 
     alerts.forEach(function (alert) {
-        // Agar alert pehle se styled nahi hai, to usko "Toast" banado
         if (!alert.classList.contains("toast-alert")) {
             alert.classList.add("toast-alert");
             alert.style.position = "fixed";
@@ -61,7 +61,6 @@ function initAlertAutoHide() {
             alert.style.margin = "0";
         }
 
-        // 3.5 second baad gayab ho jaye
         setTimeout(function () {
             alert.style.transition = "opacity 0.5s ease, transform 0.5s ease";
             alert.style.opacity = "0";
@@ -70,7 +69,7 @@ function initAlertAutoHide() {
             setTimeout(function () {
                 alert.remove();
             }, 500);
-        }, 3500); // 3.5 seconds
+        }, 3500);
     });
 }
 
@@ -86,11 +85,12 @@ document.head.appendChild(style);
 
 
 /* ==========================================================================
-   03. IMAGE UPLOAD PREVIEW
+   03. IMAGE UPLOAD PREVIEW (Dashboard & Upload Page)
    ========================================================================== */
 /* Jab user image select kare, uska preview dikhao */
 
 function initImageUpload() {
+    // 1. Upload Page Logic
     const imageInput = document.getElementById("analysisImageInput");
     const imagePreview = document.getElementById("analysisPreview");
     const previewImage = document.getElementById("analysisPreviewImage");
@@ -100,129 +100,87 @@ function initImageUpload() {
     const fileSizeEl = document.getElementById("selectedFileSize");
     const fileErrorEl = document.getElementById("fileError");
 
-    if (!imageInput) return;
+    if (imageInput) {
+        imageInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-    // File select hone pe
-    imageInput.addEventListener("change", function (event) {
-        const file = event.target.files[0];
-        if (!file) return;
+            if (fileErrorEl) fileErrorEl.style.display = "none";
 
-        // Purana error hata do
-        if (fileErrorEl) fileErrorEl.style.display = "none";
-
-        // File validate karo
-        const validation = validateFile(file);
-        if (!validation.valid) {
-            if (fileErrorEl) {
-                fileErrorEl.textContent = validation.message;
-                fileErrorEl.style.display = "block";
-                setTimeout(function () {
-                    fileErrorEl.style.display = "none";
-                }, 5000);
+            const validation = validateFile(file);
+            if (!validation.valid) {
+                if (fileErrorEl) {
+                    fileErrorEl.textContent = validation.message;
+                    fileErrorEl.style.display = "block";
+                    setTimeout(function () {
+                        fileErrorEl.style.display = "none";
+                    }, 5000);
+                }
+                imageInput.value = "";
+                return;
             }
-            imageInput.value = "";
-            return;
-        }
 
-        // Preview dikhao
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            previewImage.src = e.target.result;
-            imagePreview.style.display = "block";
-            if (uploadPrompt) uploadPrompt.style.display = "none";
-            if (fileNameEl) fileNameEl.textContent = file.name;
-            if (fileSizeEl) fileSizeEl.textContent = formatFileSize(file.size);
-        };
-        reader.readAsDataURL(file);
-    });
-
-    // Change image button
-    if (changeBtn) {
-        changeBtn.addEventListener("click", function (e) {
-            e.preventDefault();
-            resetUpload();
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewImage.src = e.target.result;
+                imagePreview.style.display = "block";
+                if (uploadPrompt) uploadPrompt.style.display = "none";
+                if (fileNameEl) fileNameEl.textContent = file.name;
+                if (fileSizeEl) fileSizeEl.textContent = formatFileSize(file.size);
+            };
+            reader.readAsDataURL(file);
         });
-    }
 
-    function resetUpload() {
-        imageInput.value = "";
-        previewImage.src = "";
-        imagePreview.style.display = "none";
-        if (uploadPrompt) uploadPrompt.style.display = "block";
-    }
-
-    function formatFileSize(bytes) {
-        if (bytes < 1024) return bytes + " B";
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-        return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-    }
-}function initImageUpload() {
-    const imageInput = document.getElementById("analysisImageInput");
-    const imagePreview = document.getElementById("analysisPreview");
-    const previewImage = document.getElementById("analysisPreviewImage");
-    const uploadPrompt = document.getElementById("uploadPrompt");
-    const changeBtn = document.getElementById("changeImage");
-    const fileNameEl = document.getElementById("selectedFileName");
-    const fileSizeEl = document.getElementById("selectedFileSize");
-    const fileErrorEl = document.getElementById("fileError");
-
-    if (!imageInput) return;
-
-    // File select hone pe
-    imageInput.addEventListener("change", function (event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        // Purana error hata do
-        if (fileErrorEl) fileErrorEl.style.display = "none";
-
-        // File validate karo
-        const validation = validateFile(file);
-        if (!validation.valid) {
-            if (fileErrorEl) {
-                fileErrorEl.textContent = validation.message;
-                fileErrorEl.style.display = "block";
-                setTimeout(function () {
-                    fileErrorEl.style.display = "none";
-                }, 5000);
-            }
-            imageInput.value = "";
-            return;
+        if (changeBtn) {
+            changeBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+                imageInput.value = "";
+                previewImage.src = "";
+                imagePreview.style.display = "none";
+                if (uploadPrompt) uploadPrompt.style.display = "block";
+            });
         }
+    }
 
-        // Preview dikhao
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            previewImage.src = e.target.result;
-            imagePreview.style.display = "block";
-            if (uploadPrompt) uploadPrompt.style.display = "none";
-            if (fileNameEl) fileNameEl.textContent = file.name;
-            if (fileSizeEl) fileSizeEl.textContent = formatFileSize(file.size);
-        };
-        reader.readAsDataURL(file);
-    });
+    // 2. Dashboard Logic (Inline Preview)
+    const dashInput = document.getElementById("imageInput");
+    const dashPreview = document.getElementById("imagePreview");
+    const dashPreviewImg = document.getElementById("previewImage");
+    const dashLabel = document.getElementById("uploadLabel");
+    const dashRemoveBtn = document.getElementById("removeImage");
 
-    // Change image button
-    if (changeBtn) {
-        changeBtn.addEventListener("click", function (e) {
-            e.preventDefault();
-            resetUpload();
+    if (dashInput && dashPreview) {
+        dashInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                dashPreviewImg.src = e.target.result;
+                dashPreview.style.display = "block";
+                if (dashLabel) dashLabel.style.display = "none";
+            };
+            reader.readAsDataURL(file);
         });
-    }
 
-    function resetUpload() {
-        imageInput.value = "";
-        previewImage.src = "";
-        imagePreview.style.display = "none";
-        if (uploadPrompt) uploadPrompt.style.display = "block";
-    }
-
-    function formatFileSize(bytes) {
-        if (bytes < 1024) return bytes + " B";
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-        return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+        if (dashRemoveBtn) {
+            dashRemoveBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+                dashInput.value = "";
+                dashPreviewImg.src = "";
+                dashPreview.style.display = "none";
+                if (dashLabel) dashLabel.style.display = "block";
+            });
+        }
     }
 }
+
+function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+}
+
 
 /* ==========================================================================
    04. DRAG & DROP SUPPORT
@@ -235,7 +193,6 @@ function initDragAndDrop() {
 
     if (!dropzone || !imageInput) return;
 
-    // Jab file dropzone ke upar aaye
     ["dragenter", "dragover"].forEach(function (eventName) {
         dropzone.addEventListener(eventName, function (e) {
             e.preventDefault();
@@ -244,7 +201,6 @@ function initDragAndDrop() {
         });
     });
 
-    // Jab file dropzone se bahar jaye
     ["dragleave", "drop"].forEach(function (eventName) {
         dropzone.addEventListener(eventName, function (e) {
             e.preventDefault();
@@ -253,7 +209,6 @@ function initDragAndDrop() {
         });
     });
 
-    // Jab file drop ho
     dropzone.addEventListener("drop", function (e) {
         const files = e.dataTransfer.files;
         if (files.length > 0) {
@@ -273,63 +228,22 @@ const ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png"];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
 function validateFile(file) {
-    // Extension check
     const extension = file.name.split(".").pop().toLowerCase();
 
     if (!ALLOWED_EXTENSIONS.includes(extension)) {
-        return {
-            valid: false,
-            message: "❌ Invalid file format. Only JPG, JPEG, and PNG are allowed."
-        };
+        return { valid: false, message: "❌ Invalid file format. Only JPG, JPEG, and PNG are allowed." };
     }
 
-    // MIME type check
     if (!ALLOWED_TYPES.includes(file.type)) {
-        return {
-            valid: false,
-            message: "❌ Invalid file type. Please upload a valid image."
-        };
+        return { valid: false, message: "❌ Invalid file type. Please upload a valid image." };
     }
 
-    // Size check
     if (file.size > MAX_FILE_SIZE) {
         const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
-        return {
-            valid: false,
-            message: "❌ File too large (" + sizeMB + " MB). Maximum allowed is 5 MB."
-        };
+        return { valid: false, message: "❌ File too large (" + sizeMB + " MB). Maximum allowed is 5 MB." };
     }
 
     return { valid: true, message: "" };
-}
-
-function showInlineError(message) {
-    // Purana error hata do
-    const oldError = document.querySelector(".js-inline-error");
-    if (oldError) oldError.remove();
-
-    // Naya error banao
-    const errorDiv = document.createElement("div");
-    errorDiv.className = "alert alert-error js-inline-error";
-    errorDiv.setAttribute("role", "alert");
-    errorDiv.textContent = message;
-
-    // Dropzone ke upar insert karo
-    const dropzone = document.getElementById("largeDropzone");  
-    if (dropzone && dropzone.parentNode) {
-        dropzone.parentNode.insertBefore(errorDiv, dropzone);
-    }
-
-    // 5 second baad auto-remove
-    setTimeout(function () {
-        if (errorDiv.parentNode) {
-            errorDiv.style.transition = "opacity 0.5s";
-            errorDiv.style.opacity = "0";
-            setTimeout(function () {
-                if (errorDiv.parentNode) errorDiv.remove();
-            }, 500);
-        }
-    }, 5000);
 }
 
 
@@ -343,19 +257,15 @@ function initFormSubmitLoading() {
 
     forms.forEach(function (form) {
         form.addEventListener("submit", function (e) {
-            // Sirf upload/analyze form pe loading dikhao
             const submitBtn = form.querySelector("button[type='submit']");
             if (!submitBtn) return;
 
-            // Agar form me file input hai to loading dikhao
             const fileInput = form.querySelector("input[type='file']");
 
             if (fileInput) {
-                // File select nahi hui to rok do
                 if (!fileInput.files || fileInput.files.length === 0) {
                     return;
                 }
-
                 submitBtn.disabled = true;
                 submitBtn.dataset.originalText = submitBtn.textContent;
                 submitBtn.innerHTML = "⏳ Analyzing... (3-5 sec)";
@@ -373,19 +283,14 @@ function initFormSubmitLoading() {
 /* Delete button pe click karne se pehle "Are you sure?" */
 
 function initDeleteConfirmation() {
-    // Use event delegation — har form pe alag listener nahi lagana padega
     document.body.addEventListener("submit", function (e) {
         const form = e.target;
 
-        // Check karo delete form hai?
         if (!form.classList.contains("delete-history-form")) {
             return;
         }
 
-        // Popup dikhao
-        const message = form.dataset.confirm ||
-            "Are you sure you want to delete this analysis?";
-
+        const message = form.dataset.confirm || "Are you sure you want to delete this analysis?";
         const confirmed = window.confirm(message);
 
         if (!confirmed) {
@@ -394,8 +299,6 @@ function initDeleteConfirmation() {
             return false;
         }
     });
-
-    console.log("✅ Delete confirmation listener attached");
 }
 
 
@@ -495,7 +398,11 @@ function initMobileMenu() {
 
     if (!navMenu || !navContainer) return;
 
-    // Hamburger button banao
+    // 🛑 AGAR LOGGED-IN BOTTOM NAV HAI TOH HAMBURGER MAT BANAO
+    if (document.body.classList.contains("has-bottom-nav")) {
+        return;
+    }
+
     const hamburger = document.createElement("button");
     hamburger.className = "hamburger";
     hamburger.setAttribute("aria-label", "Toggle navigation menu");
@@ -509,7 +416,6 @@ function initMobileMenu() {
 
     navContainer.insertBefore(hamburger, navMenu);
 
-    // Screen size check karo
     function checkScreen() {
         if (window.innerWidth <= 640) {
             hamburger.style.display = "block";
@@ -570,11 +476,9 @@ function initSearchFocus() {
     const searchInput = document.querySelector('input[type="search"]');
     if (!searchInput) return;
 
-    // Agar URL me search query hai to focus mat karo
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("search")) return;
 
-    // Warna focus karo
     searchInput.focus();
 }
 
@@ -582,97 +486,15 @@ function initSearchFocus() {
 /* ==========================================================================
    13. CONSOLE SAFETY CHECK
    ========================================================================== */
-/* Development ke doran console me confirm karo ke JS load hua */
-
 console.log("✅ ImageTag AI - script.js loaded successfully");
 
+
 /* ==========================================================================
-   DASHBOARD IMAGE PREVIEW (Dashboard.html specific)
+   14. GLOBAL LANGUAGE SWITCHER LOGIC
    ========================================================================== */
-document.addEventListener("DOMContentLoaded", function () {
-    const dashInput = document.getElementById("imageInput");
-    const dashPreview = document.getElementById("imagePreview");
-    const dashPreviewImg = document.getElementById("previewImage");
-    const dashLabel = document.getElementById("uploadLabel");
-    const dashRemoveBtn = document.getElementById("removeImage");
-
-    // Agar dashboard ke elements mil gaye hain toh ye code chale
-    if (dashInput && dashPreview) {
-        dashInput.addEventListener("change", function (event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                dashPreviewImg.src = e.target.result;
-                dashPreview.style.display = "block";
-                if (dashLabel) dashLabel.style.display = "none";
-            };
-            reader.readAsDataURL(file);
-        });
-
-        if (dashRemoveBtn) {
-            dashRemoveBtn.addEventListener("click", function (e) {
-                e.preventDefault();
-                dashInput.value = "";
-                dashPreviewImg.src = "";
-                dashPreview.style.display = "none";
-                if (dashLabel) dashLabel.style.display = "block";
-            });
-        }
-    }
-});
-
-/* =========================================================
-   THEME HANDLING (Dark/Light/System)
-   ========================================================= 
-document.addEventListener("DOMContentLoaded", function () {
-    // 1. HTML tag se database ki theme uthao (jo Flask ne bheji hai)
-    let currentTheme = document.documentElement.getAttribute("data-theme");
-    
-    // 2. Agar local storage me theme hai, to wahan se uthao
-    let savedTheme = localStorage.getItem("theme");
-    
-    // 3. Agar local storage me hai to usko use karo, warna database wali lagao
-    let finalTheme = savedTheme || currentTheme || "light";
-
-    // 4. Apply karo
-    if (finalTheme === "system") {
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.setAttribute("data-theme", "dark");
-        } else {
-            document.documentElement.setAttribute("data-theme", "light");
-        }
-    } else {
-        document.documentElement.setAttribute("data-theme", finalTheme);
-    }
-}); */
-/* =========================================================
-   GLOBAL THEME LOADER
-   ========================================================= */
-document.addEventListener("DOMContentLoaded", function () {
-    // 1. Pehle check karo ke database (HTML) se kya theme aayi hai
-    let dbTheme = document.documentElement.getAttribute("data-theme");
-    
-    // 2. LocalStorage se theme uthao
-    let localTheme = localStorage.getItem("theme");
-    
-    // 3. Agar local storage me theme hai, to usko apply karo (Login page ke liye zaroori)
-    if (localTheme) {
-        document.documentElement.setAttribute("data-theme", localTheme);
-    } else if (dbTheme) {
-        document.documentElement.setAttribute("data-theme", dbTheme);
-    }
-});
-
-
-/* =========================================================
-   GLOBAL LANGUAGE SWITCHER LOGIC (Fast & Clean)
-   ========================================================= */
 function changeLanguage() {
     const lang = document.getElementById("languageSelect").value;
     
-    // Cookie set karo
     if (lang === "en") {
         document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=" + window.location.hostname + "; path=/;";
@@ -681,12 +503,10 @@ function changeLanguage() {
         document.cookie = "googtrans=/en/" + lang + "; domain=" + window.location.hostname + "; path=/";
     }
     
-    // Page reload karo
     window.location.reload();
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Dropdown update karo
     const select = document.getElementById("languageSelect");
     if (select) {
         const match = document.cookie.match(/googtrans=\/en\/([a-zA-Z-]+)/);
@@ -697,11 +517,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Automatic Translate on Every Page
     const cookieMatch = document.cookie.match(/googtrans=\/en\/([a-zA-Z-]+)/);
     if (cookieMatch && cookieMatch[1] && cookieMatch[1] !== 'en') {
         
-        // Google translate ko jaldi load karo
         window.googleTranslateElementInit = function() {
             new google.translate.TranslateElement({
                 pageLanguage: 'en',
@@ -714,10 +532,11 @@ document.addEventListener("DOMContentLoaded", function() {
         script.src = `//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit&lang=${cookieMatch[1]}`;
         document.body.appendChild(script);
         
-        // FIX: Page ko chupao jab tak translate na ho (taake flicker na ho)
         document.documentElement.style.visibility = "hidden";
         setTimeout(function() {
             document.documentElement.style.visibility = "visible";
-        }, 200); // Sirf 0.2 second ka delay
+        }, 200);
     }
 });
+
+

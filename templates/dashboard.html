@@ -6,59 +6,22 @@
     <title>Dashboard - Image Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="dashboard-page">
+<body class="has-bottom-nav">
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-    <div id="flash-messages">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
-    
-    <div class="sidebar-logo">
-        <span class="logo-icon">AI</span>
-        <span>Image Analysis</span>
-    </div>
+{% include 'navbar.html' %}
 
-    <nav class="sidebar-menu">
-        <a href="/dashboard" class="sidebar-link active"><span>⌂</span> Dashboard</a>
-        <a href="/upload" class="sidebar-link"><span>↑</span> Analyze Image</a>
-        <a href="/history" class="sidebar-link"><span>◷</span> Analysis History</a>
-        <a href="/profile" class="sidebar-link"><span>◎</span> My Profile</a>
-        <a href="/settings" class="sidebar-link"><span>⚙</span> Settings</a>
-    </nav>
+<main class="page-container">
 
-    <div class="sidebar-bottom">
-        <a href="/logout" class="sidebar-link logout-link"><span>↪</span> Logout</a>
-    </div>
-</aside>
-
-<!-- MAIN CONTENT -->
-<main class="dashboard-main">
     <!-- TOP HEADER -->
     <header class="dashboard-header">
         <div>
             <h1>Dashboard</h1>
             <p>Analyze and understand your images with AI.</p>
         </div>
-        <div class="user-menu">
-            <div class="user-avatar">{{ session.get('username', 'U')[0]|upper }}</div>
-            <div class="user-info">
-                <strong>{{ session.get('username', 'User') }}</strong>
-                <small>Registered User</small>
-            </div>
-        </div>
     </header>
 
-    <!-- ================= WELCOME CARD ================= -->
+    <!-- WELCOME CARD -->
     <section class="welcome-card" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 40px 50px; position: relative; overflow: hidden;">
-        
-        <!-- LEFT SIDE: Text -->
         <div style="flex: 1; text-align: left; z-index: 2; position: relative;">
             <span class="welcome-label" style="background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 16px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #ffffff;">
                 ✨ AI IMAGE ANALYSIS
@@ -71,7 +34,6 @@
             </p>
         </div>
 
-        <!-- RIGHT SIDE: 3D AI Orb Animation -->
         <div style="flex-shrink: 0; z-index: 2; position: relative; margin-left: 20px;">
             <style>
                 @keyframes floatAnim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
@@ -86,7 +48,7 @@
         </div>
     </section>
 
-    <!-- ================= STATISTICS ================= -->
+    <!-- STATISTICS -->
     <section class="dashboard-stats">
         <div class="stat-card">
             <div class="stat-icon">↑</div>
@@ -106,13 +68,11 @@
         </div>
     </section>
 
-    <!-- ================= QUICK ANALYSIS ================= -->
-    <!-- Maine yahan inline style se grid ka size fix kiya hai (Left 1 barabar, Right 1.2 guna) -->
-    <section style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; align-items: stretch; margin-bottom: 28px;">
-        
-        <!-- UPLOAD CARD (New Analysis) -->
-        <!-- Is box ki height 100% aur min-height set ki hai taake text na toote -->
-        <div class="dashboard-card" style="display: flex; flex-direction: column; height: 100%; min-height: 400px;">
+    <!-- QUICK ANALYSIS (side-by-side) -->
+    <section class="dashboard-quick-section">
+
+        <!-- UPLOAD CARD -->
+        <div class="dashboard-card">
             <div class="card-heading">
                 <div>
                     <span class="card-label">NEW ANALYSIS</span>
@@ -122,30 +82,28 @@
             </div>
 
             <form action="/analyze" method="POST" enctype="multipart/form-data" id="dashboardUploadForm" style="display: flex; flex-direction: column; flex: 1;">
-                <!-- Dropzone jo poori jagah lega -->
                 <div class="upload-dropzone" id="uploadDropzone" style="flex: 1; display: flex; flex-direction: column; justify-content: center; margin-bottom: 20px;">
                     <input type="file" id="imageInput" name="image" accept=".jpg,.jpeg,.png" hidden required>
-                    
+
                     <label for="imageInput" class="upload-label" id="uploadLabel" style="height: 100%; padding: 20px;">
                         <div class="upload-icon">↑</div>
                         <h4 style="font-size: 1.1rem; margin-bottom: 5px;">Choose an image</h4>
                         <p style="font-size: 0.9rem; margin-bottom: 5px;">Click to browse or drag and drop</p>
                         <small style="font-size: 0.8rem;">JPG, JPEG or PNG</small>
                     </label>
-                    
+
                     <div id="imagePreview" class="image-preview" style="display:none; width: 100%; height: 100%;">
                         <img id="previewImage" src="" alt="Image Preview" style="width: 100%; height: 100%; object-fit: contain;">
                         <button type="button" id="removeImage" class="remove-image">×</button>
                     </div>
                 </div>
-                
+
                 <button type="submit" class="btn btn-primary btn-full" style="padding: 14px; font-size: 1rem;">Analyze Image</button>
             </form>
         </div>
 
-        
-                <!-- RECENT ANALYSIS CARD -->
-        <div class="dashboard-card" style="display: flex; flex-direction: column; align-self: start; height: fit-content; max-height: 100%;">
+        <!-- RECENT ANALYSIS CARD -->
+        <div class="dashboard-card" style="display: flex; flex-direction: column; height: 100%;">
             <div class="card-heading">
                 <div>
                     <span class="card-label">RECENT</span>
@@ -183,7 +141,7 @@
         </div>
     </section>
 
-    <!-- ================= INFO SECTION ================= -->
+    <!-- INFO SECTION -->
     <section class="info-section">
         <div class="info-content">
             <span class="card-label">HOW IT WORKS</span>

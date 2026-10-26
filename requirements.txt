@@ -8,3 +8,4 @@ reportlab
 msrest
 gunicorn
 azure-cognitiveservices-vision-computervision
+Pillow

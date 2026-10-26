@@ -1,4 +1,4 @@
-from google import genai
+from PIL import Image
 from google.genai import types
 import resend
 import os
@@ -103,9 +103,8 @@ def send_reset_email(user_email, username, token):
     
 
 def analyze_image_with_azure(image_path):
-    """Azure AI se caption aur tags nikalta hai."""
+    """Azure AI se caption aur tags nikalta hai (Auto-resize ke saath)."""
     try:
-        # Render se keys uthao
         key = os.getenv("AZURE_VISION_KEY")
         endpoint = os.getenv("AZURE_VISION_ENDPOINT")
         
@@ -113,22 +112,30 @@ def analyze_image_with_azure(image_path):
             print("❌ Azure Keys missing!")
             return "Could not analyze image.", []
 
-        # Azure Client setup
+        # --- NAYA CODE: Image ko resize karo agar wo badi hai ---
+        try:
+            img = Image.open(image_path)
+            # Agar image ka size 4MB se zyada hai ya dimensions bade hain
+            if os.path.getsize(image_path) > 4 * 1024 * 1024 or img.width > 4000 or img.height > 4000:
+                img.thumbnail((2000, 2000)) # Resize to max 2000x2000
+                img.save(image_path, optimize=True, quality=85)
+        except Exception as e:
+            print(f"⚠️ Image resize warning: {e}")
+        # --------------------------------------------------------
+
         client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(key))
 
-        # Image ko open karo
         with open(image_path, "rb") as image_stream:
             
-            # Caption nikalo (English mein)
+            # Caption nikalo
             caption_result = client.describe_image_in_stream(image_stream, max_candidates=1)
             caption = "Could not analyze image."
             if caption_result.captions:
                 caption = caption_result.captions[0].text
             
-            # Stream ko reset karo (warna tags nahi milenge)
             image_stream.seek(0)
             
-            # Tags nikalo (confidence ke saath)
+            # Tags nikalo
             tags_result = client.tag_image_in_stream(image_stream)
             tags_list = []
             
@@ -139,7 +146,6 @@ def analyze_image_with_azure(image_path):
                         "confidence": tag.confidence
                     })
             
-            # Agar Azure ne 5 se kam tags diye, toh default daal do
             if not tags_list:
                 tags_list = [{"name": "image", "confidence": 0.9}]
 

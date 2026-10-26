@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - Image Analysis</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234f46e5'/><text x='50' y='50' dominant-baseline='central' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='40' fill='white'>AI</text></svg>">
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+<body class="auth-page">
+    <div id="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+
+<div class="auth-wrapper">
+
+
+    <!-- LEFT SIDE -->
+
+    <div class="auth-info">
+
+        <a href="/" class="auth-logo">
+            <span>IA</span>
+            Image Analysis
+        </a>
+
+        <div class="auth-info-content">
+
+            <span class="hero-badge">
+                AI-Powered Platform
+            </span>
+
+            <h1>
+                Analyze your images
+                intelligently.
+            </h1>
+
+            <p>
+                Sign in to upload images, view AI-generated
+                tags and captions, and manage your analysis
+                history.
+            </p>
+
+            <div class="auth-benefit">
+
+                <span>✓</span>
+
+                <div>
+                    <strong>AI Image Analysis</strong>
+                    <small>
+                        Intelligent image recognition
+                    </small>
+                </div>
+
+            </div>
+
+            <div class="auth-benefit">
+
+                <span>✓</span>
+
+                <div>
+                    <strong>Detailed Results</strong>
+                    <small>
+                        Tags, captions and confidence scores
+                    </small>
+                </div>
+
+            </div>
+
+            <div class="auth-benefit">
+
+                <span>✓</span>
+
+                <div>
+                    <strong>Analysis History</strong>
+                    <small>
+                        Keep track of previous analyses
+                    </small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT SIDE -->
+
+    <div class="auth-form-area">
+
+        <div class="auth-form-card">
+
+            <div class="mobile-auth-logo">
+                Image Analysis
+            </div>
+
+            <h2>
+                Welcome Back
+            </h2>
+
+            <p class="auth-subtitle">
+                Sign in to your account to continue.
+            </p>
+
+
+            <!-- Flask/Jinja flash messages -->
+
+           {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+            <form method="POST" action="/login">
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+    <label for="password">Password</label>
+    <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+        required>
+    
+    <!-- Forgot password link ab input ke neeche aayega -->
+    <div style="text-align: right; margin-top: 8px;">
+        <a href="{{ url_for('forgot_password') }}" style="font-size: 0.85rem; font-weight: 500; color: var(--primary); text-decoration: none;">Forgot password?</a>
+    </div>
+</div>
+
+                <div class="remember-row">
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            name="remember">
+
+                        Remember me
+
+                    </label>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-full">
+
+                    Login
+
+                </button>
+
+
+            </form>
+
+
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+
+
+            <p class="auth-switch">
+
+                Don't have an account?
+
+                <a href="/signup">
+                    Create an account
+                </a>
+
+            </p>
+
+
+            <a href="/" class="back-home">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="/static/js/script.js"></script>
+
+</body>
+</html>

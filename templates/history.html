@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis History | ImageTag AI</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234f46e5'/><text x='50' y='50' dominant-baseline='central' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='40' fill='white'>AI</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="has-bottom-nav">
+
+{% include 'navbar.html' %}
+
+<main class="page-container">
+
+    <header class="dashboard-header">
+        <div>
+            <h1>Analysis History</h1>
+            <p>View and manage your previous image analysis results.</p>
+        </div>
+    </header>
+
+    <!-- Filter -->
+    <section class="filter-card">
+        <form method="GET" action="{{ url_for('history') }}" class="filter-form">
+            <input type="search" name="search" class="form-control" placeholder="Search by image name..." value="{{ request.args.get('search', '') }}">
+            <select name="filter" class="form-control">
+                <option value="">All Results</option>
+                <option value="recent" {% if request.args.get('filter') == 'recent' %}selected{% endif %}>Recent</option>
+                <option value="saved" {% if request.args.get('filter') == 'saved' %}selected{% endif %}>Saved</option>
+            </select>
+            <button type="submit" class="btn btn-primary btn-search">Search</button>
+        </form>
+    </section>
+
+    <!-- History Grid -->
+    {% if history %}
+    <div class="history-grid">
+        {% for item in history %}
+        <div class="history-card">
+            <img src="{{ url_for('static', filename='uploads/' + item.image_name) }}" alt="Image" class="history-image">
+            <div class="history-body">
+                <h2>{{ item.image_name }}</h2>
+                <div class="history-date">{{ item.date }}</div>
+                <p class="history-caption">{{ item.caption or 'No caption available.' }}</p>
+                <div class="history-actions">
+                    <a href="{{ url_for('history_details', result_id=item.id) }}" class="view-btn">View Analysis</a>
+                    <form action="{{ url_for('delete_history', result_id=item.id) }}" method="POST" class="delete-history-form" data-confirm="Are you sure?">
+                        <button type="submit" class="delete-btn">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h2>No Analysis History</h2>
+        <p>You have not saved any image analysis results yet.</p>
+        <a href="{{ url_for('upload') }}" class="btn btn-primary">Analyze Your First Image</a>
+    </div>
+    {% endif %}
+</main>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

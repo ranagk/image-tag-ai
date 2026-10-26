@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyze Image - Image Analysis</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234f46e5'/><text x='50' y='50' dominant-baseline='central' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='40' fill='white'>AI</text></svg>">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="has-bottom-nav">
+
+{% include 'navbar.html' %}
+
+<main class="page-container">
+
+    <header class="dashboard-header">
+        <div>
+            <h1>Analyze Image</h1>
+            <p>Upload an image for AI-powered analysis.</p>
+        </div>
+    </header>
+
+    <section class="analysis-page">
+        <div class="analysis-upload-card dashboard-card">
+            <div class="card-heading">
+                <div>
+                    <span class="card-label">IMAGE ANALYSIS</span>
+                    <h2>Upload Your Image</h2>
+                    <p>Select a JPG, JPEG or PNG image.</p>
+                </div>
+            </div>
+
+            <form action="/analyze" method="POST" enctype="multipart/form-data" id="analysisForm">
+                <div class="large-dropzone" id="largeDropzone">
+                    <input type="file" name="image" id="analysisImageInput" accept=".jpg,.jpeg,.png" hidden required>
+
+                    <div id="uploadPrompt" class="upload-prompt">
+                        <div class="large-upload-icon">↑</div>
+                        <h3>Drag & Drop Your Image</h3>
+                        <p>or click the button below to browse your device</p>
+                        <label for="analysisImageInput" class="btn btn-primary">Choose Image</label>
+                        <span class="file-support">Supported formats: JPG, JPEG, PNG</span>
+                    </div>
+
+                    <div id="analysisPreview" class="analysis-preview" style="display:none; width: 100%; text-align: center;">
+                        <img id="analysisPreviewImage" src="" alt="Selected Image" style="width: 100%; max-width: 600px; height: 350px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <div class="preview-info">
+                            <strong id="selectedFileName">Image Name</strong>
+                            <span id="selectedFileSize">0 KB</span>
+                        </div>
+                        <button type="button" id="changeImage" class="btn btn-secondary">Change Image</button>
+                    </div>
+                </div>
+
+                <div class="analysis-options">
+                    <h3>Analysis Information</h3>
+                    <div class="option-grid">
+                        <div class="option-item">
+                            <span class="option-icon">#</span>
+                            <div>
+                                <strong>Image Tags</strong>
+                                <p>Identify objects and concepts in the image.</p>
+                            </div>
+                        </div>
+                        <div class="option-item">
+                            <span class="option-icon">%</span>
+                            <div>
+                                <strong>Confidence Scores</strong>
+                                <p>View confidence levels for generated tags.</p>
+                            </div>
+                        </div>
+                        <div class="option-item">
+                            <span class="option-icon">✦</span>
+                            <div>
+                                <strong>Image Caption</strong>
+                                <p>Generate a descriptive caption for the image.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="analyzeButton" class="btn btn-primary btn-full" style="margin-top: 20px;">Analyze Image</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<script src="/static/js/script.js"></script>
+</body>
+</html>

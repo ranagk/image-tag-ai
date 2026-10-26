@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | ImageTag AI</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234f46e5'/><text x='50' y='50' dominant-baseline='central' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='40' fill='white'>AI</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="has-bottom-nav">
+
+{% include 'navbar.html' %}
+
+<main class="page-container">
+
+    <header class="dashboard-header">
+        <div>
+            <h1>My Profile</h1>
+            <p>Manage your account information.</p>
+        </div>
+    </header>
+
+    <section class="profile-card" style="max-width: 600px; margin: 0 auto;">
+        <div class="profile-header">
+            <div class="avatar">{{ user.username[0]|upper }}</div>
+            <h1>{{ user.username }}</h1>
+            <p>Registered User</p>
+        </div>
+
+        <div class="profile-info">
+            <div class="info-row">
+                <span class="label">Username</span>
+                <span class="value">{{ user.username }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Email Address</span>
+                <span class="value">{{ user.email }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Account Status</span>
+                <span class="value" style="color: var(--success);">Active</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Total Analyses</span>
+                <span class="value">{{ total_analyses|default(0) }}</span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">Edit Profile</a>
+            <a href="{{ url_for('change_password') }}" class="btn btn-secondary">Change Password</a>
+        </div>
+    </section>
+</main>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

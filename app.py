@@ -608,7 +608,7 @@ def login():
 def logout():
     session.clear()
     flash("You have been logged out.", "success")
-    return redirect(url_for("index"))
+    return redirect(url_for("login"))
 
 @app.route("/dashboard")
 @login_required

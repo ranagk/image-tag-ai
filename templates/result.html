@@ -48,15 +48,14 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">AI Service</span>
-                    <span class="info-value" style="color: var(--success); font-weight: 600;">API</span>
+                    <span class="info-value" style="color: var(--success); font-weight: 600;">Microsoft Azure API</span>
                 </div>
             </div>
         </section>
 
-        <!-- RIGHT: Caption, AI Detection & Tags -->
         <section class="result-card">
             
-            <!-- NAYA SECTION: AI Detection Result -->
+            
             <h2>AI Detection</h2>
             <div class="caption-box" style="border-left-color: {% if result.is_ai %}var(--danger){% else %}var(--success){% endif %}; margin-bottom: 25px;">
                 {% if result.is_ai %}
@@ -78,13 +77,12 @@
                 {% endif %}
             </div>
 
-            <!-- Caption Section -->
             <h2>AI Generated Caption</h2>
             <div class="caption-box" style="font-size: 1.05rem; font-style: italic; margin-bottom: 30px;">
                 "{{ result.caption or 'No caption was generated for this image.' }}"
             </div>
 
-            <!-- Tags Section -->
+        
             <h2>Detected Tags ({{ result.tags|length }})</h2>
             <div class="tag-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 {% if result.tags %}

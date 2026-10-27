@@ -1,3 +1,4 @@
+import requests
 from PIL import Image
 from google.genai import types
 import resend
@@ -154,6 +155,50 @@ def analyze_image_with_azure(image_path):
     except Exception as e:
         print(f"❌ Azure API Error: {e}")
         return "Could not analyze image.", []
+
+
+
+def detect_ai_image(image_path):
+    """Sightengine se check karta hai ke image AI-generated hai ya nahi."""
+    try:
+        api_user = os.getenv("SIGHTENGINE_USER")
+        api_secret = os.getenv("SIGHTENGINE_SECRET")
+        
+        if not api_user or not api_secret:
+            print("❌ Sightengine keys missing!")
+            return None
+
+        # API ko request bhejo
+        with open(image_path, "rb") as f:
+            files = {'media': f}
+            params = {
+                'models': 'genai', # Ye model AI-generated images detect karta hai
+                'api_user': api_user,
+                'api_secret': api_secret
+            }
+            response = requests.post('https://api.sightengine.com/1.0/check.json', files=files, data=params)
+            result = response.json()
+
+        if result.get("status") == "success":
+            # Sightengine ka response check karo
+            ai_score = result.get("type", {}).get("ai_generated", 0.0)
+            if isinstance(ai_score, dict):
+                ai_score = ai_score.get("score", 0.0)
+            
+            # Agar score 0.5 se zyada hai, toh matlab AI-generated hai
+            is_ai = float(ai_score) > 0.5
+            return {
+                "is_ai": is_ai,
+                "confidence": float(ai_score),
+                "raw": result
+            }
+        else:
+            print(f"❌ Sightengine API error: {result.get('error', {})}")
+            return None
+
+    except Exception as e:
+        print(f"❌ Sightengine Exception: {e}")
+        return None
 # =========================================================
 # DATABASE CONFIG
 # =========================================================
@@ -615,19 +660,34 @@ def analyze():
     file.save(save_path)
 
     print("⏳ Sending image to Microsoft Azure...")
-    # Yahan function change kiya gaya hai
     caption, tags = analyze_image_with_azure(save_path)
     print(f"✅ Azure Analysis done. Tags found: {len(tags)}")
+
+    # --- NAYA CODE: Sightengine se AI Detection ---
+    print("🔍 Checking if image is AI-generated...")
+    ai_result = detect_ai_image(save_path) 
+    
+    is_ai = False
+    ai_confidence = 0.0
+    
+    if ai_result:
+        is_ai = ai_result["is_ai"]
+        ai_confidence = ai_result["confidence"]
+        print(f"✅ AI Detection: is_ai={is_ai}, confidence={ai_confidence:.2f}")
+    else:
+        print("⚠️ AI Detection failed or keys missing.")
+    # ----------------------------------------------
 
     tags_json = json.dumps(tags)
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
     try:
+        # Database mein save karte waqt naye columns bhi add kiye hain
         cursor.execute(
-            "INSERT INTO analyses (user_id, image_name, original_name, caption, tags_json, created_at) "
-            "VALUES (%s, %s, %s, %s, %s, %s)",
-            (session["user_id"], unique_name, original_name, caption, tags_json, datetime.now())
+            "INSERT INTO analyses (user_id, image_name, original_name, caption, tags_json, is_ai, ai_confidence, created_at) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+            (session["user_id"], unique_name, original_name, caption, tags_json, is_ai, ai_confidence, datetime.now())
         )
         db.commit()
         analysis_id = cursor.lastrowid
@@ -641,7 +701,6 @@ def analyze():
         return render_template("error.html", error_message="Database error. Please try again.")
     finally:
         cursor.close()
-
 @app.route("/result/<int:analysis_id>")
 @login_required
 def result(analysis_id):
@@ -664,6 +723,8 @@ def result(analysis_id):
             "date": analysis["created_at"].strftime("%Y-%m-%d %H:%M"),
             "caption": analysis["caption"],
             "tags": tags_list,
+            "is_ai": analysis.get("is_ai", False),            
+            "ai_confidence": analysis.get("ai_confidence", 0.0) 
         }
         return render_template("result.html", result=result_data)
     finally:
@@ -719,35 +780,61 @@ def download_report(analysis_id):
         p.setFont("Helvetica-Bold", 12)
         p.drawString(text_x, 600, "AI Service: ")
         p.setFont("Helvetica", 12)
-        p.drawString(text_x, 580, "Google Gemini AI")
+        p.drawString(text_x, 580, "Microsoft Azure AI")
+
+        # --- AI Detection Result ---
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(text_x, 550, "AI Detection: ")
+        p.setFont("Helvetica", 12)
+        
+        is_ai = analysis.get("is_ai", False)
+        ai_conf = analysis.get("ai_confidence", 0.0)
+        
+        if is_ai:
+            p.setFillColorRGB(0.8, 0.2, 0.2) # Red
+            p.drawString(text_x, 530, f"AI-Generated ({ai_conf * 100:.1f}%)")
+        else:
+            p.setFillColorRGB(0.2, 0.6, 0.2) # Green
+            p.drawString(text_x, 530, f"Real Image ({(1 - ai_conf) * 100:.1f}%)")
+            
+        p.setFillColorRGB(0, 0, 0) # Black wapas
+        # ---------------------------
 
         p.setFont("Helvetica-Bold", 12)
-        p.drawString(text_x, 540, "Image Caption:")
+        p.drawString(text_x, 500, "Image Caption:")
         p.setFont("Helvetica-Oblique", 11)
         
         caption = str(analysis["caption"])
         if len(caption) > 40:
-            p.drawString(text_x, 520, caption[:40] + "...")
-            p.drawString(text_x, 505, caption[40:80])
+            p.drawString(text_x, 480, caption[:40] + "...")
+            p.drawString(text_x, 465, caption[40:80])
         else:
-            p.drawString(text_x, 520, caption)
+            p.drawString(text_x, 480, caption)
 
+        # --- NAYA CODE: Tags ko 2 columns mein divide karo ---
         p.setFont("Helvetica-Bold", 14)
         p.drawString(50, 340, "Detected Tags")
-        p.setFont("Helvetica", 12)
+        p.setFont("Helvetica", 10) # Font size chhota kiya
         
         y_position = 320
+        col_1_x = 60   # Pehla column left
+        col_2_x = 310  # Doosra column right
+        
         if tags_list:
-            for tag in tags_list:
-                tag_text = f"• {tag['name'].capitalize()} : {int(tag['confidence'] * 100)}% confidence"
-                p.drawString(60, y_position, tag_text)
-                y_position -= 20
-                if y_position < 60:
-                    p.showPage()
-                    p.setFont("Helvetica", 12)
-                    y_position = 750
+            # Half tags pehle column mein, half doosre mein
+            half_length = (len(tags_list) + 1) // 2
+            
+            for i, tag in enumerate(tags_list):
+                tag_text = f"• {tag['name'].capitalize()} : {int(tag['confidence'] * 100)}%"
+                
+                # Left ya Right column decide karo
+                if i < half_length:
+                    p.drawString(col_1_x, y_position - (i * 18), tag_text)
+                else:
+                    p.drawString(col_2_x, y_position - ((i - half_length) * 18), tag_text)
         else:
             p.drawString(60, y_position, "No tags detected.")
+        # -----------------------------------------------------
 
         p.setFont("Helvetica-Oblique", 10)
         p.drawString(50, 30, "Generated by Image Analysis & Tagging Web Application")
@@ -819,6 +906,8 @@ def history_details(result_id):
             "date": analysis["created_at"].strftime("%Y-%m-%d %H:%M"),
             "caption": analysis["caption"],
             "tags": tags_list,
+            "is_ai": analysis.get("is_ai", False),            
+            "ai_confidence": analysis.get("ai_confidence", 0.0) 
         }
         return render_template("history-detail.html", result=result_data)
     finally:

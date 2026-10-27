@@ -72,7 +72,10 @@
                     <span class="status-dot" aria-label="System active">●</span>
                 </div>
 
+                
+
                 <div class="image-placeholder">
+                    <div class="scan-line"></div>
                     <div class="image-icon" aria-hidden="true">🖼</div>
                     <p>Upload your image</p>
                     <small>JPG, JPEG or PNG</small>
@@ -80,9 +83,9 @@
 
                 <div class="sample-result">
                     <div class="result-title">Sample Analysis Result</div>
-                    <div class="tag-row"><span>Person</span><strong>98%</strong></div>
-                    <div class="tag-row"><span>Outdoor</span><strong>94%</strong></div>
-                    <div class="tag-row"><span>Nature</span><strong>91%</strong></div>
+                    <div class="tag-row anim-tag-1"><span>👤 Person</span><strong>98%</strong></div>
+                    <div class="tag-row anim-tag-2"><span>🌳 Outdoor</span><strong>94%</strong></div>
+                    <div class="tag-row anim-tag-3"><span>🍃 Nature</span><strong>91%</strong></div>
                 </div>
             </div>
         </div>
@@ -102,6 +105,12 @@
             <div class="feature-icon" aria-hidden="true">↑</div>
             <h3>Easy Image Upload</h3>
             <p>Upload JPG or PNG images through a simple and user-friendly interface.</p>
+        </article>
+               
+        <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">🤖</div>
+            <h3>AI Detection</h3>
+            <p>Check if the uploaded image is AI-generated or a real photograph.</p>
         </article>
 
         <article class="feature-card">
@@ -140,10 +149,10 @@
 <section id="how-it-works" class="steps-section">
     <div class="section-heading">
         <span class="section-label">HOW IT WORKS</span>
-        <h2>Analyze an Image in Three Steps</h2>
+        <h2>Analyze an Image in Four Steps</h2>
     </div>
 
-    <div class="steps-container">
+    <div class="steps-container" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
         <article class="step-card">
             <div class="step-number">01</div>
             <h3>Upload</h3>
@@ -152,14 +161,20 @@
 
         <article class="step-card">
             <div class="step-number">02</div>
-            <h3>Analyze</h3>
-            <p>The image is processed using the integrated AI image analysis service.</p>
+            <h3>AI Analysis</h3>
+            <p>The image is processed to generate tags and captions.</p>
         </article>
 
         <article class="step-card">
             <div class="step-number">03</div>
+            <h3>AI Detection</h3>
+            <p>Check if the image is AI-generated or a real photograph.</p>
+        </article>
+
+        <article class="step-card">
+            <div class="step-number">04</div>
             <h3>View Results</h3>
-            <p>Review the generated tags, confidence scores, and image caption.</p>
+            <p>Review the tags, confidence scores, caption, and detection results.</p>
         </article>
     </div>
 </section>

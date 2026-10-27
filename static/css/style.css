@@ -2364,3 +2364,32 @@ body { top: 0 !important; position: static !important; }
         top: auto !important;
     }
 }
+/* ==========================================================================
+   HERO SECTION ANIMATIONS (index.html)
+   ========================================================================== */
+
+/* Scan Line ko dabbe ke andar rakhne ke liye */
+.image-placeholder {
+    position: relative; /* Ye zaroori hai taake scan line isi ke andar rahe */
+    overflow: hidden;   /* Scan line bahar na nikle */
+}
+
+.scan-line {
+    position: absolute;
+    top: -10%;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(79, 70, 229, 0.8);
+    box-shadow: 0 0 20px 4px rgba(79, 70, 229, 0.6);
+    z-index: 1;
+    animation: scan 2.5s infinite linear;
+    pointer-events: none;
+}
+
+@keyframes scan {
+    0% { top: -10%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 110%; opacity: 0; }
+}

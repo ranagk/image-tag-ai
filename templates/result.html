@@ -53,13 +53,38 @@
             </div>
         </section>
 
-        <!-- RIGHT: Caption & Tags -->
+        <!-- RIGHT: Caption, AI Detection & Tags -->
         <section class="result-card">
+            
+            <!-- NAYA SECTION: AI Detection Result -->
+            <h2>AI Detection</h2>
+            <div class="caption-box" style="border-left-color: {% if result.is_ai %}var(--danger){% else %}var(--success){% endif %}; margin-bottom: 25px;">
+                {% if result.is_ai %}
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5rem;">⚠️</span>
+                        <div>
+                            <strong style="color: var(--danger); display: block; font-size: 1.1rem;">AI-Generated Image</strong>
+                            <span style="font-size: 0.85rem; color: var(--text-secondary);">Confidence: {{ "%.1f"|format(result.ai_confidence * 100) }}%</span>
+                        </div>
+                    </div>
+                {% else %}
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5rem;">✅</span>
+                        <div>
+                            <strong style="color: var(--success); display: block; font-size: 1.1rem;">Real Image (Human Made)</strong>
+                            <span style="font-size: 0.85rem; color: var(--text-secondary);">Confidence: {{ "%.1f"|format((1 - result.ai_confidence) * 100) }}%</span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Caption Section -->
             <h2>AI Generated Caption</h2>
             <div class="caption-box" style="font-size: 1.05rem; font-style: italic; margin-bottom: 30px;">
                 "{{ result.caption or 'No caption was generated for this image.' }}"
             </div>
 
+            <!-- Tags Section -->
             <h2>Detected Tags ({{ result.tags|length }})</h2>
             <div class="tag-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 {% if result.tags %}

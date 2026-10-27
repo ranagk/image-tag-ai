@@ -51,6 +51,27 @@
             <div class="caption-box">
                 {{ result.caption or 'No caption available.' }}
             </div>
+            <!-- NAYA: AI Detection Section -->
+            <h3>AI Detection</h3>
+                <div class="caption-box" style="border-left-color: {% if result.is_ai %}var(--danger){% else %}var(--success){% endif %}; margin-bottom: 20px;">
+                    {% if result.is_ai %}
+                <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 1.5rem;">⚠️</span>
+                <div>
+                    <strong style="color: var(--danger); display: block; font-size: 1.1rem;">AI-Generated Image</strong>
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Confidence: {{ "%.1f"|format(result.ai_confidence * 100) }}%</span>
+                </div>
+                </div>
+    {% else %}
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 1.5rem;">✅</span>
+            <div>
+                <strong style="color: var(--success); display: block; font-size: 1.1rem;">Real Image (Human Made)</strong>
+                <span style="font-size: 0.85rem; color: var(--text-secondary);">Confidence: {{ "%.1f"|format((1 - result.ai_confidence) * 100) }}%</span>
+            </div>
+        </div>
+    {% endif %}
+</div>
 
             <h3>Detected Tags</h3>
             <div class="tag-list">

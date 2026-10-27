@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | ImageTag AI</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234f46e5'/><text x='50' y='50' dominant-baseline='central' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='40' fill='white'>AI</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+{% include 'navbar.html' %}
+<main class="page-container">
+    <div class="card" style="padding: 40px; margin-top: 40px;">
+        <h1>Privacy Policy</h1>
+        <p style="margin-top: 20px; color: var(--text-secondary);">Your privacy is important to us. This policy outlines how we handle your data.</p>
+        <h3 style="margin-top: 20px;">1. Data Collection</h3>
+        <p style="color: var(--text-secondary);">We collect images you upload solely for the purpose of AI analysis. We do not sell your data.</p>
+        <h3 style="margin-top: 20px;">2. Image Storage</h3>
+        <p style="color: var(--text-secondary);">Images are stored temporarily for analysis and history tracking. You can delete them at any time from your history.</p>
+    </div>
+</main>
+{% include 'footer.html' %}
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | ImageTag AI</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234f46e5'/><text x='50' y='50' dominant-baseline='central' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='40' fill='white'>AI</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+{% include 'navbar.html' %}
+<main class="page-container">
+    <div class="info-section" style="margin-top: 40px;">
+        <div class="info-content">
+            <span class="card-label">ABOUT THE PROJECT</span>
+            <h2>Intelligent Image Understanding</h2>
+            <p>Image Analysis & Tagging is a web-based application designed to simplify image understanding through automated AI analysis.</p>
+            <p>Our system analyzes uploaded images and provides descriptive tags, confidence levels, AI detection, and captions through an easy-to-use web interface.</p>
+        </div>
+    </div>
+</main>
+{% include 'footer.html' %}
+</body>
+</html>

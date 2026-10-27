@@ -1095,6 +1095,17 @@ def server_error(e):
 def too_large(e):
     return render_template("error.html", error_message="File too large. Maximum allowed is 5 MB."), 413
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+@app.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
+
+@app.route("/terms")
+def terms():
+    return render_template("terms.html")
 
 if __name__ == "__main__":
     if init_db():

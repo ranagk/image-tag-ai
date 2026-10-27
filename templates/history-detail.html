@@ -26,7 +26,12 @@
         
         <div class="card">
             <h2>Analyzed Image</h2>
-            <img src="{{ url_for('static', filename='uploads/' + result.image_name) }}" alt="Analyzed Image" class="analysis-image">
+           <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: var(--bg-body); border-radius: var(--radius); padding: 10px; min-height: 200px;">
+                <img src="{{ url_for('static', filename='uploads/' + result.image_name) }}" 
+                    alt="Analyzed Image" 
+                    style="max-height: 400px; object-fit: contain; border-radius: var(--radius);"
+                    onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'text-align:center; color:var(--text-muted);\'>⚠️ Image file not found on server.</div>'">
+            </div>
         </div>
 
         <div class="card">

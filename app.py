@@ -52,8 +52,8 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # =========================================================
 def send_verification_email(user_email, username, token):
     resend.api_key = os.getenv("RESEND_API_KEY")
-    # ...
-    verify_url = url_for('verify_email', token=token, _external=True) # <-- Line 53, ye bilkul left se align ho
+    verify_url = url_for('verify_email', token=token, _external=True)
+    
     html_body = f"""
     <h2>Welcome to ImageTag AI, {username}!</h2>
     <p>Please click the link below to verify your email address and activate your account:</p>
@@ -76,9 +76,8 @@ def send_verification_email(user_email, username, token):
 
 def send_reset_email(user_email, username, token):
     resend.api_key = os.getenv("RESEND_API_KEY")
-    
     reset_url = url_for('reset_password', token=token, _external=True)
-
+    
     html_body = f"""
     <h2>Password Reset Request</h2>
     <p>Hi {username},</p>
@@ -90,7 +89,8 @@ def send_reset_email(user_email, username, token):
 
     try:
         params = {
-            "from": "ImageTag AI <onboarding@resend.dev>",
+            # YAHAN CHANGE KIYA HAI: onboarding@resend.dev ko hata kar apna domain lagaya hai
+            "from": "ImageTag AI <no-reply@mail.mohsinprojects.dev>", 
             "to": [user_email],
             "subject": "Reset Your Password - ImageTag AI",
             "html": html_body
